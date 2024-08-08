@@ -11,9 +11,6 @@ function testing_properties.drawCoordinates()
 
 	-- Middle part of the window's width at the TitleBar that resizes dynamically.
 	love.graphics.circle("line",titleBar.x+dynamicAppWindow.middleWidth,titleBar.y+titleBar.height/2,testing_properties.r)
-
-	-- Farther right side of MenuBar, to demonstrate constantAppWindow.width
-	love.graphics.circle("line",menuBar.x+constantAppWindow.width,menuBar.y+menuBar.height/2,testing_properties.r)
 end
 
 function testing_properties.drawInterface()	
@@ -40,8 +37,6 @@ function love.load()
 	love.window.maximize()
 
 	origin = {x=0,y=0}
-	constantAppWindow={}
-	constantAppWindow.width,constantAppWindow.height = love.window.getDesktopDimensions(1)
 	dynamicAppWindow={		-- Changes dynamically.
 		width=0,
 		height=0,
