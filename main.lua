@@ -52,6 +52,7 @@ function love.load()
 	require "interface.leafBarAndHorizontalScrollBar"
 	require "interface.statusViewAndZoom"
 	require "interface.verticalScrollBar"
+	require "userControls"
 
 	titleBar.load()
 	menuBar.load()
@@ -75,6 +76,7 @@ function love.draw()
 	leafBarAndHorizontalScrollBar.draw()
 	statusViewAndZoom.draw()
 	verticalScrollBar.draw()
+	cursor.draw()
 end
 
 function love.update()
@@ -90,4 +92,5 @@ function love.update()
 	leafBarAndHorizontalScrollBar.update()
 	statusViewAndZoom.update()
 	verticalScrollBar.update()
+	cursor.update()
 end
