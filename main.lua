@@ -29,7 +29,7 @@ function testing_properties.drawInterface()
 	-- Status Bar, View Buttons and Zoom Controls
 	love.graphics.rectangle("line",statusViewAndZoom.x,statusViewAndZoom.y,statusViewAndZoom.width,statusViewAndZoom.height)
 	-- Vertical Scroll Bar
-	love.graphics.rectangle("fill",verticalScrollBar.x,verticalScrollBar.y,verticalScrollBar.width,verticalScrollBar.height)
+	love.graphics.rectangle("line",verticalScrollBar.x,verticalScrollBar.y,verticalScrollBar.width,verticalScrollBar.height)
 end
 
 function love.load()

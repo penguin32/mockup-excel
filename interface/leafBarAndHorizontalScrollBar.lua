@@ -5,7 +5,6 @@ function leafBarAndHorizontalScrollBar.load()
 	leafBarAndHorizontalScrollBar.width=dynamicAppWindow.width
 	leafBarAndHorizontalScrollBar.height=30
 	--	Simple adjustments due to ordering of load(), added on statusViewAndZoom.load()
-	--leafBarAndHorizontalScrollBar.y=0
 	leafBarAndHorizontalScrollBar.y=0
 
 	leafBarAndHorizontalScrollBar.scrollBar={
@@ -34,7 +33,7 @@ function leafBarAndHorizontalScrollBar.draw()
 	love.graphics.rectangle("fill",leafBarAndHorizontalScrollBar.scrollBar.deltaX,leafBarAndHorizontalScrollBar.scrollBar.btnY,leafBarAndHorizontalScrollBar.scrollBar.btnWidth,leafBarAndHorizontalScrollBar.scrollBar.btnHeight)
 
 	-- Just for testing horizontal scroll bar.
-	love.graphics.print(leafBarAndHorizontalScrollBar.scrollBar.percentage*100 .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
+--	love.graphics.print((leafBarAndHorizontalScrollBar.scrollBar.percentage*100+25) .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
 end
 
 local function setBtnPercentage()-- Will set percentage.
@@ -84,7 +83,7 @@ function leafBarAndHorizontalScrollBar.update()
 	end
 end
 
-function leafBarAndHorizontalScrollBar.interact()
+function leafBarAndHorizontalScrollBar.interact() -- Used in userControls.lua
 	if cursor.y > leafBarAndHorizontalScrollBar.scrollBar.y and cursor.y < leafBarAndHorizontalScrollBar.scrollBar.y + leafBarAndHorizontalScrollBar.scrollBar.height and cursor.x > leafBarAndHorizontalScrollBar.scrollBar.x and cursor.x < leafBarAndHorizontalScrollBar.scrollBar.x + leafBarAndHorizontalScrollBar.scrollBar.maxWidth then
 		leafBarAndHorizontalScrollBar.scrollBar.isPressed = true
 	end
