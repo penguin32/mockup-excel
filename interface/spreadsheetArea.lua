@@ -3,8 +3,8 @@ spreadsheetArea={}
 function spreadsheetArea.load()
 	spreadsheetArea.x=origin.x
 	spreadsheetArea.y=nameBoxAndFormulaBar.y+nameBoxAndFormulaBar.height
-	--spreadsheetArea.height=0 -- Adjusted at statusViewAndZoom.load()
-	--spreadsheetArea.width=0  -- Adjusted at verticalScrollBar.load() or update()
+	spreadsheetArea.height=0 -- Adjusted at statusViewAndZoom.load()
+	spreadsheetArea.width=0  -- Adjusted at verticalScrollBar.load() or update()
 
 	spreadsheetArea.totalLengthColumn=0 -- Use for horizontal scroll bar percentage.
 	spreadsheetArea.totalLengthRow=0
@@ -69,6 +69,7 @@ function spreadsheetArea.draw()
 end
 
 function spreadsheetArea.update()
+	spreadsheetArea.ratio = (spreadsheetArea.width-spreadsheetArea.cBoxField.width)/spreadsheetArea.totalLengthColumn
 	spreadsheetArea.scrollBarUpdate()
 end
 
@@ -84,6 +85,6 @@ end
 function spreadsheetArea.scrollBarUpdate()
 	spreadsheetArea.portionTotalLengthColumn = spreadsheetArea.totalLengthColumn*leafBarAndHorizontalScrollBar.scrollBar.percentage
 	for i,v in ipairs(spreadsheetArea.cRect) do
-		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn
+		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn/spreadsheetArea.ratio
 	end
 end
