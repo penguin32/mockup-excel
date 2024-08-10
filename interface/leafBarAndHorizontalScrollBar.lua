@@ -38,18 +38,18 @@ function leafBarAndHorizontalScrollBar.draw()
 end
 
 local function setBtnPercentage()-- Will set percentage.
-if leafBarAndHorizontalScrollBar.scrollBar.isPressed == true then
-	leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel=(leafBarAndHorizontalScrollBar.scrollBar.maxWidth-leafBarAndHorizontalScrollBar.scrollBar.btnWidth)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth	-- Pretend maxPercent, It's not actually 100, because maxWidth is
-			  -- subtracted by btnWidth.
-	leafBarAndHorizontalScrollBar.scrollBar.percentage=(leafBarAndHorizontalScrollBar.scrollBar.deltaX-leafBarAndHorizontalScrollBar.scrollBar.x)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth
-	if leafBarAndHorizontalScrollBar.scrollBar.percentage < leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel then
-		leafBarAndHorizontalScrollBar.scrollBar.percentage = leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel
-	elseif leafBarAndHorizontalScrollBar.scrollBar.percentage > leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel then
-		leafBarAndHorizontalScrollBar.scrollBar.percentage = leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel
-		-- Pretend max percentage, because not really actually a 100%,
-		-- because of btnWidth.
+	if leafBarAndHorizontalScrollBar.scrollBar.isPressed == true then
+		leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel=(leafBarAndHorizontalScrollBar.scrollBar.maxWidth-leafBarAndHorizontalScrollBar.scrollBar.btnWidth)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth	-- Pretend maxPercent, It's not actually 100, because maxWidth is
+				  -- subtracted by btnWidth.
+		leafBarAndHorizontalScrollBar.scrollBar.percentage=(leafBarAndHorizontalScrollBar.scrollBar.deltaX-leafBarAndHorizontalScrollBar.scrollBar.x)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth
+		if leafBarAndHorizontalScrollBar.scrollBar.percentage < leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel then
+			leafBarAndHorizontalScrollBar.scrollBar.percentage = leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel
+		elseif leafBarAndHorizontalScrollBar.scrollBar.percentage > leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel then
+			leafBarAndHorizontalScrollBar.scrollBar.percentage = leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel
+			-- Pretend max percentage, because not really actually a 100%,
+			-- because of btnWidth.
+		end
 	end
-end
 end
 
 local function setScrollBarBtn()-- Will set scroll bar btn base of percentage, and check bounds
@@ -74,6 +74,18 @@ function leafBarAndHorizontalScrollBar.update()
 	leafBarAndHorizontalScrollBar.scrollBar.y=leafBarAndHorizontalScrollBar.y+5
 	leafBarAndHorizontalScrollBar.scrollBar.btnY=leafBarAndHorizontalScrollBar.scrollBar.y+2.9
 	leafBarAndHorizontalScrollBar.scrollBar.btnWidth=leafBarAndHorizontalScrollBar.scrollBar.maxWidth/4
+
+
 	setBtnPercentage()
 	setScrollBarBtn()
+
+	if leafBarAndHorizontalScrollBar.scrollBar.isPressed == true then
+		leafBarAndHorizontalScrollBar.scrollBar.deltaX = cursor.x - leafBarAndHorizontalScrollBar.scrollBar.btnWidth/2
+	end
+end
+
+function leafBarAndHorizontalScrollBar.interact()
+	if cursor.y > leafBarAndHorizontalScrollBar.scrollBar.y and cursor.y < leafBarAndHorizontalScrollBar.scrollBar.y + leafBarAndHorizontalScrollBar.scrollBar.height and cursor.x > leafBarAndHorizontalScrollBar.scrollBar.x and cursor.x < leafBarAndHorizontalScrollBar.scrollBar.x + leafBarAndHorizontalScrollBar.scrollBar.maxWidth then
+		leafBarAndHorizontalScrollBar.scrollBar.isPressed = true
+	end
 end
