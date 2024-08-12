@@ -10,7 +10,7 @@ end
 
 function testing_properties.drawRowsAttb()
 	love.graphics.print("Total rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+50,0,2,2)
-	love.graphics.print("Portion rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+100,0,2,2)
+	love.graphics.print("Portion rows length: "..spreadsheetArea.portionTotalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+100,0,2,2)
 end
 
 function testing_properties.drawCoordinates() -- For Testing.
