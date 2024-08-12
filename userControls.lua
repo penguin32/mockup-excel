@@ -1,11 +1,13 @@
 cursor={x=0,y=0}
 
 function love.mousepressed()
+	verticalScrollBar.interact()
 	leafBarAndHorizontalScrollBar.interact()
 end
 
 function love.mousereleased()
 	leafBarAndHorizontalScrollBar.scrollBar.isPressed = false
+	verticalScrollBar.scrollBar.isPressed = false
 end
 
 function cursor.update()

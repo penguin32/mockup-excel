@@ -33,13 +33,13 @@ function leafBarAndHorizontalScrollBar.draw()
 	love.graphics.rectangle("fill",leafBarAndHorizontalScrollBar.scrollBar.deltaX,leafBarAndHorizontalScrollBar.scrollBar.btnY,leafBarAndHorizontalScrollBar.scrollBar.btnWidth,leafBarAndHorizontalScrollBar.scrollBar.btnHeight)
 
 	-- Just for testing horizontal scroll bar.
---	love.graphics.print((leafBarAndHorizontalScrollBar.scrollBar.percentage*100+25) .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
+	love.graphics.print((leafBarAndHorizontalScrollBar.scrollBar.percentage*100+25) .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
 end
 
-local function setBtnPercentage()-- Will set percentage.
+local function setBtnPercentage() -- Will set percentage.
 	if leafBarAndHorizontalScrollBar.scrollBar.isPressed == true then
-		leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel=(leafBarAndHorizontalScrollBar.scrollBar.maxWidth-leafBarAndHorizontalScrollBar.scrollBar.btnWidth)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth	-- Pretend maxPercent, It's not actually 100, because maxWidth is
-				  -- subtracted by btnWidth.
+		leafBarAndHorizontalScrollBar.scrollBar.maxPercentToPixel=(leafBarAndHorizontalScrollBar.scrollBar.maxWidth-leafBarAndHorizontalScrollBar.scrollBar.btnWidth)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth	-- Pretend maxPercent, It's not actually 100,
+				  -- because maxWidth is subtracted by btnWidth.
 		leafBarAndHorizontalScrollBar.scrollBar.percentage=(leafBarAndHorizontalScrollBar.scrollBar.deltaX-leafBarAndHorizontalScrollBar.scrollBar.x)/leafBarAndHorizontalScrollBar.scrollBar.maxWidth
 		if leafBarAndHorizontalScrollBar.scrollBar.percentage < leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel then
 			leafBarAndHorizontalScrollBar.scrollBar.percentage = leafBarAndHorizontalScrollBar.scrollBar.minPercentToPixel

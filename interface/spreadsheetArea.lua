@@ -69,7 +69,6 @@ function spreadsheetArea.draw()
 end
 
 function spreadsheetArea.update()
-	spreadsheetArea.ratio = (spreadsheetArea.width-spreadsheetArea.cBoxField.width)/spreadsheetArea.totalLengthColumn
 	spreadsheetArea.scrollBarUpdate()
 end
 
@@ -85,6 +84,6 @@ end
 function spreadsheetArea.scrollBarUpdate()
 	spreadsheetArea.portionTotalLengthColumn = spreadsheetArea.totalLengthColumn*leafBarAndHorizontalScrollBar.scrollBar.percentage
 	for i,v in ipairs(spreadsheetArea.cRect) do
-		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn/spreadsheetArea.ratio
+		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn
 	end
 end
