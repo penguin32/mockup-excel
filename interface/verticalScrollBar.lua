@@ -9,7 +9,7 @@ function verticalScrollBar.load()
 	verticalScrollBar.scrollBar={
 		x=0, -- Getting updated at update() here.
 		y=0,
-		width=verticalScrollBar.width/1.4,
+		width=verticalScrollBar.width,
 		maxHeight=0,
 		btnX=0,
 		deltaY=0,
@@ -63,7 +63,7 @@ function verticalScrollBar.update()
 
 	-- For scroll bar.
 	verticalScrollBar.scrollBar.x=verticalScrollBar.x
-	verticalScrollBar.scrollBar.y=verticalScrollBar.y+6
+	verticalScrollBar.scrollBar.y=verticalScrollBar.y
 	verticalScrollBar.scrollBar.btnX=verticalScrollBar.scrollBar.x+3
 	verticalScrollBar.scrollBar.btnHeight=verticalScrollBar.height/5
 	verticalScrollBar.scrollBar.maxHeight=verticalScrollBar.height

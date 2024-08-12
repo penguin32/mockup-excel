@@ -2,7 +2,18 @@ testing_properties={ -- Used by testing properties, in drawing or updating:
 	r=20		-->Radius, for testing, showing points in the viewport.
 }
 
-function testing_properties.drawCoordinates()
+function testing_properties.drawColumnsAttb() -- Column attributes.
+	-- Below is for Testing columnXrow lengths.
+	love.graphics.print("Total columns length: "..spreadsheetArea.totalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+150,0,2,2)
+	love.graphics.print("Portion columns length: "..spreadsheetArea.portionTotalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+200,0,2,2)
+end
+
+function testing_properties.drawRowsAttb()
+	love.graphics.print("Total rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+50,0,2,2)
+	love.graphics.print("Portion rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+100,0,2,2)
+end
+
+function testing_properties.drawCoordinates() -- For Testing.
 	-- Four corners of a dynamically resizing window.
 	love.graphics.circle("line",origin.x,origin.y,testing_properties.r)
 	love.graphics.circle("line",origin.x+dynamicAppWindow.width,origin.y,testing_properties.r)
@@ -65,7 +76,9 @@ function love.load()
 end
 
 function love.draw()
---	testing_properties.drawCoordinates()
+--	testing_properties.drawCoordinates() -- Those circles you'd see in the screen.
+	testing_properties.drawColumnsAttb() -- For seeing column attributes scroll bar.
+	testing_properties.drawRowsAttb() -- For seeing row attributes scroll bar.
 	testing_properties.drawInterface()
 
 	titleBar.draw()

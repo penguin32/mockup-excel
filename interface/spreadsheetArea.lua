@@ -7,8 +7,9 @@ function spreadsheetArea.load()
 	spreadsheetArea.width=0  -- Adjusted at verticalScrollBar.load() or update()
 
 	spreadsheetArea.totalLengthColumn=0 -- Use for horizontal scroll bar percentage.
-	spreadsheetArea.totalLengthRow=0
 	spreadsheetArea.portionTotalLengthColumn=0
+	spreadsheetArea.totalLengthRow=0
+	spreadsheetArea.portionTotalLengthRow=0
 	spreadsheetArea.cBoxField={
 		width=20,
 		height=20,
@@ -61,11 +62,6 @@ function spreadsheetArea.draw()
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/9.5,v.deltaY+v.height/6,0,1,1)
 	end
-
-	-- Below is for Testing columnXrow lengths.
-	love.graphics.print("Total rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+50,0,2,2)
-	love.graphics.print("Total columns length: "..spreadsheetArea.totalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+100,0,2,2)
-	love.graphics.print("Portion column length: "..spreadsheetArea.portionTotalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+150,0,2,2)
 end
 
 function spreadsheetArea.update()
@@ -85,5 +81,9 @@ function spreadsheetArea.scrollBarUpdate()
 	spreadsheetArea.portionTotalLengthColumn = spreadsheetArea.totalLengthColumn*leafBarAndHorizontalScrollBar.scrollBar.percentage
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn
+	end
+	spreadsheetArea.portionTotalLengthRow = spreadsheetArea.totalLengthRow*verticalScrollBar.scrollBar.percentage
+	for i,v in ipairs(spreadsheetArea.rRect) do
+		v.deltaY=v.y-spreadsheetArea.portionTotalLengthRow
 	end
 end
