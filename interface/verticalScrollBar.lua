@@ -63,15 +63,15 @@ function verticalScrollBar.update()
 
 	-- For scroll bar.
 	verticalScrollBar.scrollBar.x=verticalScrollBar.x
-	verticalScrollBar.scrollBar.y=verticalScrollBar.y
+	verticalScrollBar.scrollBar.y=verticalScrollBar.y+spreadsheetArea.cBoxField.height
 	verticalScrollBar.scrollBar.btnX=verticalScrollBar.scrollBar.x+3
 	verticalScrollBar.scrollBar.btnHeight=verticalScrollBar.height/5
-	verticalScrollBar.scrollBar.maxHeight=verticalScrollBar.height
+	verticalScrollBar.scrollBar.maxHeight=verticalScrollBar.height-spreadsheetArea.cBoxField.height
 	setBtnPercentage()
 	setScrollBarBtn()
 
 	if verticalScrollBar.scrollBar.isPressed == true then
-		verticalScrollBar.scrollBar.deltaY = cursor.y - verticalScrollBar.scrollBar.btnHeight/2
+		verticalScrollBar.scrollBar.deltaY=cursor.y-verticalScrollBar.scrollBar.btnHeight/2
 	end
 
 	-- From spreadsheetArea.lua

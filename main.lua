@@ -2,15 +2,19 @@ testing_properties={ -- Used by testing properties, in drawing or updating:
 	r=20		-->Radius, for testing, showing points in the viewport.
 }
 
-function testing_properties.drawColumnsAttb() -- Column attributes.
+function testing_properties.drawHorizontalScrollBarAttb() -- Column attributes.
 	-- Below is for Testing columnXrow lengths.
 	love.graphics.print("Total columns length: "..spreadsheetArea.totalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+150,0,2,2)
 	love.graphics.print("Portion columns length: "..spreadsheetArea.portionTotalLengthColumn,spreadsheetArea.x+100,spreadsheetArea.y+200,0,2,2)
+-- Just for testing horizontal scroll bar.
+	love.graphics.print((leafBarAndHorizontalScrollBar.scrollBar.percentage*100+25) .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
 end
 
-function testing_properties.drawRowsAttb()
+function testing_properties.drawVerticalScrollBarAttb()
 	love.graphics.print("Total rows length: "..spreadsheetArea.totalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+50,0,2,2)
 	love.graphics.print("Portion rows length: "..spreadsheetArea.portionTotalLengthRow,spreadsheetArea.x+100,spreadsheetArea.y+100,0,2,2)
+-- Just for testing vertical scroll bar.
+	love.graphics.print((verticalScrollBar.scrollBar.percentage*100+21-0.0740740) .."%",verticalScrollBar.x-100,verticalScrollBar.y+verticalScrollBar.height/2,0,1.5,1.5)
 end
 
 function testing_properties.drawCoordinates() -- For Testing.
@@ -77,8 +81,8 @@ end
 
 function love.draw()
 --	testing_properties.drawCoordinates() -- Those circles you'd see in the screen.
-	testing_properties.drawColumnsAttb() -- For seeing column attributes scroll bar.
-	testing_properties.drawRowsAttb() -- For seeing row attributes scroll bar.
+	testing_properties.drawHorizontalScrollBarAttb() -- For seeing column attributes scroll bar.
+	testing_properties.drawVerticalScrollBarAttb() -- For seeing row attributes scroll bar.
 	testing_properties.drawInterface()
 
 	titleBar.draw()

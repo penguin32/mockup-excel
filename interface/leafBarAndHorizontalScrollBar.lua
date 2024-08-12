@@ -31,9 +31,6 @@ function leafBarAndHorizontalScrollBar.draw()
 	love.graphics.rectangle("line",leafBarAndHorizontalScrollBar.scrollBar.x,leafBarAndHorizontalScrollBar.scrollBar.y,leafBarAndHorizontalScrollBar.scrollBar.maxWidth,leafBarAndHorizontalScrollBar.scrollBar.height)
 	-- btnScrollBar.
 	love.graphics.rectangle("fill",leafBarAndHorizontalScrollBar.scrollBar.deltaX,leafBarAndHorizontalScrollBar.scrollBar.btnY,leafBarAndHorizontalScrollBar.scrollBar.btnWidth,leafBarAndHorizontalScrollBar.scrollBar.btnHeight)
-
-	-- Just for testing horizontal scroll bar.
-	love.graphics.print((leafBarAndHorizontalScrollBar.scrollBar.percentage*100+25) .."%",leafBarAndHorizontalScrollBar.scrollBar.x-leafBarAndHorizontalScrollBar.scrollBar.maxWidth/2,leafBarAndHorizontalScrollBar.y+4,0,1.5,1.5)
 end
 
 local function setBtnPercentage() -- Will set percentage.
