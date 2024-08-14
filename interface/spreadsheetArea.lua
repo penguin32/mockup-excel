@@ -23,15 +23,16 @@ function spreadsheetArea.load()
 	-- because of alphabets, It'll be Object(x,y)
 	spreadsheetArea.cRect={} -- columnsRectangles, an Object that has value and positions.
 	spreadsheetArea.rRect={} -- rowRectangles, an Object that has value and positions.
+	spreadsheetArea.rAndC={} -- The table, rows and columns of spreadsheet.
 	spreadsheetArea.amountOfRows = 30	-- Could be change by user.
-	for i = 65,90,1 do
+	for i = 65,90,1 do -- Alphabets
 		table.insert(spreadsheetArea.cRect,{
 			value=string.char(i),
 			width=65,
 			height=spreadsheetArea.cBoxField.height,
 		       x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 			y=spreadsheetArea.y,
-			deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
+		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 			deltaY=spreadsheetArea.y
 		})
 	end
@@ -41,15 +42,27 @@ function spreadsheetArea.load()
 			width=spreadsheetArea.cBoxField.width,
 			height=20,
 			x=spreadsheetArea.cBoxField.x,
-			y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
+		       y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 			deltaX=spreadsheetArea.cBoxField.x,
-			deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1)
+		   deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1)
 		})
 	end
+	for i = 1,spreadsheetArea.amountOfRows,1 do
+		for j = 65,90,1 do -- Alphabets
+			table.insert(spreadsheetArea.rAndC,{
+				value="",
+				width=65,
+				height=20,
+	              x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(j-65),
+		      y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
+		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
+	           deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1)
+			})
+		end
+	end
 
-	-- Below is for Testing columnXrow lengths.
-	-- Run once for now, plan: only run when needed.
-	spreadsheetArea.getTotalLengthColumnRow()
+	spreadsheetArea.getTotalLengthColumnRow() -- Used for scrollBar navigation.
+						  -- scrollBarUpdate()
 end
 
 function spreadsheetArea.draw()
@@ -62,6 +75,10 @@ function spreadsheetArea.draw()
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/9.5,v.deltaY+v.height/6,0,1,1)
 	end
+	for i,v in ipairs(spreadsheetArea.rAndC) do
+		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
+		love.graphics.print(v.value,v.deltaX+v.width/2,v.deltaY+v.height/6,0,1,1)
+	end
 end
 
 function spreadsheetArea.update()
@@ -72,7 +89,7 @@ function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by horizontal 
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		spreadsheetArea.totalLengthColumn=spreadsheetArea.totalLengthColumn+v.width
 	end
-	for i,v in ipairs(spreadsheetArea.rRect) do
+	for i,v in ipairs(spreadsheetArea.rRect) do -- and vertical scroll bar.
 		spreadsheetArea.totalLengthRow=spreadsheetArea.totalLengthRow+v.height
 	end
 end
@@ -84,6 +101,10 @@ function spreadsheetArea.scrollBarUpdate()
 	end
 	spreadsheetArea.portionTotalLengthRow = spreadsheetArea.totalLengthRow*verticalScrollBar.scrollBar.percentage
 	for i,v in ipairs(spreadsheetArea.rRect) do
+		v.deltaY=v.y-spreadsheetArea.portionTotalLengthRow
+	end
+	for i,v in ipairs(spreadsheetArea.rAndC) do
+		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn
 		v.deltaY=v.y-spreadsheetArea.portionTotalLengthRow
 	end
 end

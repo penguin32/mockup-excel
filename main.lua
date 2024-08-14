@@ -81,8 +81,8 @@ end
 
 function love.draw()
 --	testing_properties.drawCoordinates() -- Those circles you'd see in the screen.
-	testing_properties.drawHorizontalScrollBarAttb() -- For seeing column attributes scroll bar.
-	testing_properties.drawVerticalScrollBarAttb() -- For seeing row attributes scroll bar.
+--	testing_properties.drawHorizontalScrollBarAttb() -- For seeing column attributes scroll bar.
+--	testing_properties.drawVerticalScrollBarAttb() -- For seeing row attributes scroll bar.
 	testing_properties.drawInterface()
 
 	titleBar.draw()
