@@ -30,20 +30,41 @@ end
 
 function testing_properties.drawInterface()	
 	-- Title Bar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",titleBar.x,titleBar.y,titleBar.width,titleBar.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",titleBar.x,titleBar.y,titleBar.width,titleBar.height)
 	-- Menu Bar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",menuBar.x,menuBar.y,menuBar.width,menuBar.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",menuBar.x,menuBar.y,menuBar.width,menuBar.height)
 	-- Tool Bar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",toolBar.x,toolBar.y,toolBar.width,toolBar.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",toolBar.x,toolBar.y,toolBar.width,toolBar.height)
 	-- Name Box and Formula Bar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",nameBoxAndFormulaBar.x,nameBoxAndFormulaBar.y,nameBoxAndFormulaBar.width,nameBoxAndFormulaBar.height)	
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",nameBoxAndFormulaBar.x,nameBoxAndFormulaBar.y,nameBoxAndFormulaBar.width,nameBoxAndFormulaBar.height)	
 	-- Spreadsheet Area
 	love.graphics.rectangle("line",spreadsheetArea.x,spreadsheetArea.y,spreadsheetArea.width,spreadsheetArea.height)
 	-- Leaf Bar and Horizontal ScrollBar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",leafBarAndHorizontalScrollBar.x,leafBarAndHorizontalScrollBar.y,leafBarAndHorizontalScrollBar.width,leafBarAndHorizontalScrollBar.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",leafBarAndHorizontalScrollBar.x,leafBarAndHorizontalScrollBar.y,leafBarAndHorizontalScrollBar.width,leafBarAndHorizontalScrollBar.height)
 	-- Status Bar, View Buttons and Zoom Controls
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",statusViewAndZoom.x,statusViewAndZoom.y,statusViewAndZoom.width,statusViewAndZoom.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",statusViewAndZoom.x,statusViewAndZoom.y,statusViewAndZoom.width,statusViewAndZoom.height)
 	-- Vertical Scroll Bar
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",verticalScrollBar.x,verticalScrollBar.y,verticalScrollBar.width,verticalScrollBar.height)
+	love.graphics.setColor(1,1,1)
 	love.graphics.rectangle("line",verticalScrollBar.x,verticalScrollBar.y,verticalScrollBar.width,verticalScrollBar.height)
 end
 
@@ -81,19 +102,20 @@ end
 
 function love.draw()
 --	testing_properties.drawCoordinates() -- Those circles you'd see in the screen.
---	testing_properties.drawHorizontalScrollBarAttb() -- For seeing column attributes scroll bar.
+--	testing_properties.drawHorizontalScrollBarAttb() -- For seeing column attributes
+							 -- scroll bar.
 --	testing_properties.drawVerticalScrollBarAttb() -- For seeing row attributes scroll bar.
-	testing_properties.drawInterface()
-
+	spreadsheetArea.draw()				-- Hidden behind other interfaces.
+	testing_properties.drawInterface() 		 -- Temporary boxes for interface.
 	titleBar.draw()
 	menuBar.draw()
 	toolBar.draw()
 	nameBoxAndFormulaBar.draw()
-	spreadsheetArea.draw()
 	leafBarAndHorizontalScrollBar.draw()
 	statusViewAndZoom.draw()
 	verticalScrollBar.draw()
 	cursor.draw()
+
 end
 
 function love.update()

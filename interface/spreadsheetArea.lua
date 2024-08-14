@@ -66,19 +66,29 @@ function spreadsheetArea.load()
 end
 
 function spreadsheetArea.draw()
-	love.graphics.rectangle("line",spreadsheetArea.cBoxField.x,spreadsheetArea.cBoxField.y,spreadsheetArea.cBoxField.width,spreadsheetArea.cBoxField.height)
+	for i,v in ipairs(spreadsheetArea.rAndC) do
+		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
+		love.graphics.print(v.value,v.deltaX+v.width/2,v.deltaY+v.height/6,0,1,1,string.len(v.value)*3)
+	end
+
 	for i,v in ipairs(spreadsheetArea.cRect) do
+		love.graphics.setColor(0,0,0)
+		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+		love.graphics.setColor(1,1,1)
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/2,v.deltaY+v.height/6,0,1,1)
 	end
 	for i,v in ipairs(spreadsheetArea.rRect) do
+		love.graphics.setColor(0,0,0)
+		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+		love.graphics.setColor(1,1,1)
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/9.5,v.deltaY+v.height/6,0,1,1)
 	end
-	for i,v in ipairs(spreadsheetArea.rAndC) do
-		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
-		love.graphics.print(v.value,v.deltaX+v.width/2,v.deltaY+v.height/6,0,1,1)
-	end
+	love.graphics.setColor(0,0,0)
+	love.graphics.rectangle("fill",spreadsheetArea.cBoxField.x,spreadsheetArea.cBoxField.y,spreadsheetArea.cBoxField.width,spreadsheetArea.cBoxField.height)
+	love.graphics.setColor(1,1,1)
+	love.graphics.rectangle("line",spreadsheetArea.cBoxField.x,spreadsheetArea.cBoxField.y,spreadsheetArea.cBoxField.width,spreadsheetArea.cBoxField.height)
 end
 
 function spreadsheetArea.update()
