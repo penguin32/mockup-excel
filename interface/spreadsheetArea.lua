@@ -110,6 +110,7 @@ end
 
 function spreadsheetArea.update()
 	spreadsheetArea.scrollBarUpdate()
+	spreadsheetArea.mouseVisibility()
 end
 
 function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by horizontal scroll bar.
@@ -133,5 +134,13 @@ function spreadsheetArea.scrollBarUpdate()
 	for i,v in ipairs(spreadsheetArea.rAndC) do
 		v.deltaX=v.x-spreadsheetArea.portionTotalLengthColumn
 		v.deltaY=v.y-spreadsheetArea.portionTotalLengthRow
+	end
+end
+
+function spreadsheetArea.mouseVisibility()
+	if cursor.x > spreadsheetArea.x and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y and cursor.y < spreadsheetArea.y + spreadsheetArea.width then
+		love.mouse.setVisible(false)
+	else
+		love.mouse.setVisible(true)
 	end
 end

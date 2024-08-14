@@ -114,7 +114,7 @@ function love.draw()
 	leafBarAndHorizontalScrollBar.draw()
 	statusViewAndZoom.draw()
 	verticalScrollBar.draw()
-	cursor.draw()
+	--cursor.draw()
 
 end
 
