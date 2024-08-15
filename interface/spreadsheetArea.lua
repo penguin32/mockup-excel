@@ -115,6 +115,20 @@ spreadsheetArea.rectangularSelection.y = self.deltaY
 		y=0,			-- I will refer to the first selected box here.
 					-- Then put all those selected boxes in a table here.
 		table={},		-- I should refer its object's value as an identifier.
+		updateTable = function()
+			for i,v in ipairs(spreadsheetArea.rectangularSelection.table) do
+				for k,j in ipairs(spreadsheetArea.rAndC) do
+if love.mouse.isDown(1) and j.onlyInsideViewport() then
+	if j.value == v then
+		if not(j.deltaX >= spreadsheetArea.rectangularSelection.x and j.deltaX <= cursor.x and j.deltaY >= spreadsheetArea.rectangularSelection.y and j.deltaY <= cursor.y) then
+	j.keepHighlighted = false
+		table.remove(spreadsheetArea.rectangularSelection.table,i)
+		end
+	end
+end
+				end
+			end
+		end,
 		onMouseDown = function()-- On update() here.
 	   for i,v in ipairs(spreadsheetArea.rAndC) do
    		if love.mouse.isDown(1) and v.onlyInsideViewport() then
@@ -173,9 +187,10 @@ end
 
 function spreadsheetArea.update()
 	spreadsheetArea.rectangularSelection.onMouseDown()
+	spreadsheetArea.rectangularSelection.updateTable()
 	spreadsheetArea.rectangularSelection.keepHighlighted()
 	spreadsheetArea.scrollBarUpdate()
-	spreadsheetArea.mouseVisibility()
+--	spreadsheetArea.mouseVisibility()
 	for i, v in ipairs(spreadsheetArea.rAndC) do -- for testing
 		if v.selected == true then
 			spreadsheetArea.rectangularSelection.x=v.deltaX
