@@ -14,16 +14,18 @@ function love.mousepressed(x,y,button)
 	verticalScrollBar.interact()
 	leafBarAndHorizontalScrollBar.interact()
 	for i,v in ipairs(spreadsheetArea.rAndC) do
-		v.rectangularSelection(v)
+		if v.onlyInsideViewport() then
+			v.rectangularSelection(v)
+		end
 	end
 end
 
 function love.mousereleased()
 	leafBarAndHorizontalScrollBar.scrollBar.isPressed = false
 	verticalScrollBar.scrollBar.isPressed = false
-	for i,v in ipairs(spreadsheetArea.rAndC) do
-		v.onMousereleased(v)
-	end
+--	for i,v in ipairs(spreadsheetArea.rAndC) do
+--		v.onMousereleased(v)
+--	end
 end
 
 function cursor.update()

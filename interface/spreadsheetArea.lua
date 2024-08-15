@@ -66,10 +66,9 @@ function spreadsheetArea.load()
 		  	end
 
 		  end,
-		  highlight = function(self,bool)
-		 	 bool = false or self.onlyInsideViewport()
-		  if bool then
-			if self.selecting == true or (cursor.x > self.deltaX and cursor.y > self.deltaY and cursor.x < self.deltaX + self.width and cursor.y < self.deltaY + self.height) then
+		  highlight = function(self, bool)
+			  bool = bool or true
+			if self.keepHighlighted == true or self.selecting == true or (cursor.x > self.deltaX and cursor.y > self.deltaY and cursor.x < self.deltaX + self.width and cursor.y < self.deltaY + self.height) then
 				self["color"]["g"]=0.1
 	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
 		love.graphics.rectangle("fill",self.deltaX,self.deltaY,self.width,self.height)
@@ -78,7 +77,9 @@ function spreadsheetArea.load()
 	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
 		love.graphics.rectangle("line",self.deltaX,self.deltaY,self.width,self.height)
 	      love.graphics.setColor(1,1,1)
+	      if bool == self.onlyInsideViewport() then
 	      return true
+	      end
 			else
 				self["color"]["g"]=0.1
 	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
@@ -86,29 +87,53 @@ function spreadsheetArea.load()
 	      love.graphics.setColor(1,1,1)
 	      return false
 			end
-	           end
 		   end,
 		   selecting = false,
 		   selected = false,	-- Need to be manually turned false by the user.
 		   rectangularSelection = function(self) -- Used on mousepressed() userControls
-			   if self.highlight(self) and self.selected == false then
+			   spreadsheetArea.rectangularSelection.table = {}
+spreadsheetArea.rectangularSelection.x = self.deltaX
+spreadsheetArea.rectangularSelection.y = self.deltaY
+			   self.keepHighlighted = false
+			   if self.highlight(self,false) and self.selected == false then
 				   self.selecting = true
 				   self.selected = true
-			   elseif not self.highlight(self) and self.onlyInsideViewport() then
+			   else
 				   self.selected = false
+				   self.selecting = false
 			   end
 		   end,
-		   onMousereleased = function(self) -- Used on userControls.lua
-			   self.selecting = false
-		   end
+--		   onMousereleased = function(self) -- Used on userControls.lua
+--			   self.selecting = false
+--		   end,
+		   keepHighlighted = false
 		})
 		end
 	end
 	spreadsheetArea.rectangularSelection={-- Will be use for grabing boxes.
 		x=0,			-- Instead of looping through all boxes,
-		y=0			-- I will refer to the first selected box here.
+		y=0,			-- I will refer to the first selected box here.
 					-- Then put all those selected boxes in a table here.
-					-- I should refer its object's value as an identifier.
+		table={},		-- I should refer its object's value as an identifier.
+		onMouseDown = function()-- On update() here.
+	   for i,v in ipairs(spreadsheetArea.rAndC) do
+   		if love.mouse.isDown(1) and v.onlyInsideViewport() then
+		   if v.deltaX >= spreadsheetArea.rectangularSelection.x and v.deltaX <= cursor.x and v.deltaY >= spreadsheetArea.rectangularSelection.y and v.deltaY <= cursor.y  then
+			   table.insert(spreadsheetArea.rectangularSelection.table,v.value)
+	--		   v.keepHighlighted = true
+		   end
+		end
+	   end
+		 end,
+		 keepHighlighted = function()
+			 for i,v in ipairs(spreadsheetArea.rectangularSelection.table) do
+				for i,object in ipairs(spreadsheetArea.rAndC) do
+					if object.value == v then
+						object.keepHighlighted = true
+					end
+				end
+			 end
+		 end
 	}
 	spreadsheetArea.getTotalLengthColumnRow() -- Used for scrollBar navigation.
 						  -- scrollBarUpdate()
@@ -147,6 +172,8 @@ function spreadsheetArea.draw()
 end
 
 function spreadsheetArea.update()
+	spreadsheetArea.rectangularSelection.onMouseDown()
+	spreadsheetArea.rectangularSelection.keepHighlighted()
 	spreadsheetArea.scrollBarUpdate()
 	spreadsheetArea.mouseVisibility()
 	for i, v in ipairs(spreadsheetArea.rAndC) do -- for testing
