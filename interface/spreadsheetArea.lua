@@ -57,113 +57,19 @@ function spreadsheetArea.load()
 		      y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 	          deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
-		  ["color"]={["r"]=0,["g"]=0.1,["b"]=0},
-		  onlyInsideViewport = function()
-			if (cursor.x > spreadsheetArea.x and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y and cursor.y < spreadsheetArea.y + spreadsheetArea.height) then
-				return true
-			else
-				return false
-		  	end
-
-		  end,
-		  highlight = function(self, bool)
-			  bool = bool or true
-			if self.keepHighlighted == true or self.selecting == true or (cursor.x > self.deltaX and cursor.y > self.deltaY and cursor.x < self.deltaX + self.width and cursor.y < self.deltaY + self.height) then
-				self["color"]["g"]=0.1
-	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
-		love.graphics.rectangle("fill",self.deltaX,self.deltaY,self.width,self.height)
-	      love.graphics.setColor(1,1,1)
-				self["color"]["g"]=1
-	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
-		love.graphics.rectangle("line",self.deltaX,self.deltaY,self.width,self.height)
-	      love.graphics.setColor(1,1,1)
-	      if bool == self.onlyInsideViewport() then
-	      return true
-	      end
-			else
-				self["color"]["g"]=0.1
-	      love.graphics.setColor(self["color"]["r"],self["color"]["g"],self["color"]["b"])
-		love.graphics.rectangle("line",self.deltaX,self.deltaY,self.width,self.height)
-	      love.graphics.setColor(1,1,1)
-	      return false
-			end
-		   end,
-		   selecting = false,
-		   selected = false,	-- Need to be manually turned false by the user.
-		   rectangularSelection = function(self) -- Used on mousepressed() userControls
-			   spreadsheetArea.rectangularSelection.table = {}
-spreadsheetArea.rectangularSelection.x = self.deltaX
-spreadsheetArea.rectangularSelection.y = self.deltaY
-			   self.keepHighlighted = false
-			   if self.highlight(self,false) and self.selected == false then
-				   self.selecting = true
-				   self.selected = true
-			   else
-				   self.selected = false
-				   self.selecting = false
-			   end
-		   end,
---		   onMousereleased = function(self) -- Used on userControls.lua
---			   self.selecting = false
---		   end,
-		   keepHighlighted = false
-		})
+		  ["color"]={["r"]=0,["g"]=0.1,["b"]=0}
+			})
 		end
 	end
-	spreadsheetArea.rectangularSelection={-- Will be use for grabing boxes.
-		x=0,			-- Instead of looping through all boxes,
-		y=0,			-- I will refer to the first selected box here.
-					-- Then put all those selected boxes in a table here.
-		table={},		-- I should refer its object's value as an identifier.
-		updateTable = function()
-			for i,v in ipairs(spreadsheetArea.rectangularSelection.table) do
-				for k,j in ipairs(spreadsheetArea.rAndC) do
-if love.mouse.isDown(1) and j.onlyInsideViewport() then
-	if j.value == v then
-		if not(j.deltaX >= spreadsheetArea.rectangularSelection.x and j.deltaX <= cursor.x and j.deltaY >= spreadsheetArea.rectangularSelection.y and j.deltaY <= cursor.y) then
-	j.keepHighlighted = false
-		table.remove(spreadsheetArea.rectangularSelection.table,i)
-		end
-	end
-end
-				end
-			end
-		end,
-		onMouseDown = function()-- On update() here.
-	   for i,v in ipairs(spreadsheetArea.rAndC) do
-   		if love.mouse.isDown(1) and v.onlyInsideViewport() then
-		   if v.deltaX >= spreadsheetArea.rectangularSelection.x and v.deltaX <= cursor.x and v.deltaY >= spreadsheetArea.rectangularSelection.y and v.deltaY <= cursor.y  then
-			   table.insert(spreadsheetArea.rectangularSelection.table,v.value)
-	--		   v.keepHighlighted = true
-		   end
-		end
-	   end
-		 end,
-		 keepHighlighted = function()
-			 for i,v in ipairs(spreadsheetArea.rectangularSelection.table) do
-				for i,object in ipairs(spreadsheetArea.rAndC) do
-					if object.value == v then
-						object.keepHighlighted = true
-					end
-				end
-			 end
-		 end
-	}
 	spreadsheetArea.getTotalLengthColumnRow() -- Used for scrollBar navigation.
 						  -- scrollBarUpdate()
 end
 
 function spreadsheetArea.draw()
-	for i, v in ipairs(spreadsheetArea.rAndC) do -- for testing
-		if v.selected == true then
-			love.graphics.setColor(1,1,1)
-			love.graphics.circle("fill",spreadsheetArea.rectangularSelection.x,spreadsheetArea.rectangularSelection.y,20)
-		end
-	end
-	for i = #spreadsheetArea.rAndC, 1, -1 do -- Iterating from the end of the sequence.
-		spreadsheetArea.rAndC[i].highlight(spreadsheetArea.rAndC[i])
-		love.graphics.print(spreadsheetArea.rAndC[i].value,spreadsheetArea.rAndC[i].deltaX+spreadsheetArea.rAndC[i].width/2,spreadsheetArea.rAndC[i].deltaY+spreadsheetArea.rAndC[i].height/6,0,1,1,string.len(spreadsheetArea.rAndC[i].value)*3)
-	end
+	spreadsheetArea.highlight()
+for i,v in ipairs(spreadsheetArea.rAndC) do --For testing
+	love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
+end
 
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		love.graphics.setColor(0,0,0)
@@ -186,17 +92,8 @@ function spreadsheetArea.draw()
 end
 
 function spreadsheetArea.update()
-	spreadsheetArea.rectangularSelection.onMouseDown()
-	spreadsheetArea.rectangularSelection.updateTable()
-	spreadsheetArea.rectangularSelection.keepHighlighted()
 	spreadsheetArea.scrollBarUpdate()
 --	spreadsheetArea.mouseVisibility()
-	for i, v in ipairs(spreadsheetArea.rAndC) do -- for testing
-		if v.selected == true then
-			spreadsheetArea.rectangularSelection.x=v.deltaX
-			spreadsheetArea.rectangularSelection.y=v.deltaY
-		end
-	end
 end
 
 function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by horizontal scroll bar.
@@ -224,9 +121,46 @@ function spreadsheetArea.scrollBarUpdate()
 end
 
 function spreadsheetArea.mouseVisibility()
-	if cursor.x > spreadsheetArea.x and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
+	if spreadsheetArea.containCursor() then
 		love.mouse.setVisible(false)
 	else
 		love.mouse.setVisible(true)
+	end
+end
+
+function spreadsheetArea.containCursor()	-- Contain cursor in viewport.
+	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
+		return true
+	else
+		return false
+	end
+end
+
+function spreadsheetArea.highlight()
+	local tablePos = {x=0,y=0} -- Local table position.
+	for a,topObj in ipairs(spreadsheetArea.cRect) do -- Top most.
+		for b,leftObj in ipairs(spreadsheetArea.rRect) do -- Left most.
+			if spreadsheetArea.containCursor() and (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
+				tablePos.x = topObj.deltaX
+				tablePos.y = leftObj.deltaY
+			end
+		end
+	end
+	for i,v in ipairs(spreadsheetArea.rAndC) do
+		if v.deltaX == tablePos.x and v.deltaY == tablePos.y then
+			v["color"]["g"]=0.1
+			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
+			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+			love.graphics.setColor(1,1,1)
+			v["color"]["g"]=1
+			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
+			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
+			love.graphics.setColor(1,1,1)
+		else
+			v["color"]["g"]=0.1
+			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
+			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
+			love.graphics.setColor(1,1,1)
+		end
 	end
 end
