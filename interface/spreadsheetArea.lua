@@ -65,6 +65,22 @@ function spreadsheetArea.load()
 						  -- scrollBarUpdate()
 end
 
+local function containCursor()	-- Contain cursor in viewport.
+	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y + spreadsheetArea.cBoxField.height and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
+		return true
+	else
+		return false
+	end
+end
+
+local function topBoxInteraction(v) -- returns true if cursor interacts with a box.
+	if (cursor.y > spreadsheetArea.cBoxField.y and cursor.y < spreadsheetArea.cBoxField.y + spreadsheetArea.cBoxField.height and cursor.x > v.deltaX and cursor.x < v.deltaX + v.width) and (cursor.x > spreadsheetArea.cBoxField.x + spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width) then
+		return true
+	else
+		return false
+	end
+end
+
 function spreadsheetArea.draw()
 	spreadsheetArea.highlight()
 for i,v in ipairs(spreadsheetArea.rAndC) do --For testing
@@ -74,6 +90,11 @@ end
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		love.graphics.setColor(0,0,0)
 		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+		if topBoxInteraction(v) then
+			love.graphics.setColor(0.4,0.4,0)
+			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+			love.graphics.setColor(1,1,1)
+		end
 		love.graphics.setColor(1,1,1)
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/2,v.deltaY+v.height/6,0,1,1)
@@ -121,26 +142,20 @@ function spreadsheetArea.scrollBarUpdate()
 end
 
 function spreadsheetArea.mouseVisibility()
-	if spreadsheetArea.containCursor() then
+	if containCursor() then
 		love.mouse.setVisible(false)
 	else
 		love.mouse.setVisible(true)
 	end
 end
 
-function spreadsheetArea.containCursor()	-- Contain cursor in viewport.
-	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y + spreadsheetArea.cBoxField.height and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
-		return true
-	else
-		return false
-	end
-end
+
 
 function spreadsheetArea.highlight()
 	local tablePos = {x=0,y=0} -- Local table position.
 	for a,topObj in ipairs(spreadsheetArea.cRect) do -- Top most.
 		for b,leftObj in ipairs(spreadsheetArea.rRect) do -- Left most.
-			if spreadsheetArea.containCursor() and (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
+			if containCursor() and (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
 				tablePos.x = topObj.deltaX
 				tablePos.y = leftObj.deltaY
 			end
@@ -164,3 +179,5 @@ function spreadsheetArea.highlight()
 		end
 	end
 end
+
+
