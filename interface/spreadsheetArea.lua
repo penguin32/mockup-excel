@@ -31,6 +31,7 @@ local function updateSpreadsheet()
 			index = index + 1
 			spreadsheetArea.rAndC[index].x = d.x
 			spreadsheetArea.rAndC[index].y = b.y
+			spreadsheetArea.rAndC[index].width = d.width
 		end
 	end
 end
