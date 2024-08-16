@@ -129,7 +129,7 @@ function spreadsheetArea.mouseVisibility()
 end
 
 function spreadsheetArea.containCursor()	-- Contain cursor in viewport.
-	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
+	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y + spreadsheetArea.cBoxField.height and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
 		return true
 	else
 		return false
