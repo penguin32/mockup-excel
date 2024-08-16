@@ -1,5 +1,40 @@
 spreadsheetArea={}
 
+local function containCursor()	-- Contain cursor in viewport.
+	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y + spreadsheetArea.cBoxField.height and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
+		return true
+	else
+		return false
+	end
+end
+
+local function topBoxInteraction(v) -- Returns true if cursor interacts with a box.
+	if (cursor.y > spreadsheetArea.cBoxField.y and cursor.y < spreadsheetArea.cBoxField.y + spreadsheetArea.cBoxField.height and cursor.x > v.deltaX and cursor.x < v.deltaX + v.width) and (cursor.x > spreadsheetArea.cBoxField.x + spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width) then
+		return true
+	else
+		return false
+	end
+end
+
+local function topBoxUpdate()
+	for i,v in ipairs(spreadsheetArea.cRect) do
+		if i ~= 1 then
+			v.x=spreadsheetArea.cRect[i-1].x+spreadsheetArea.cRect[i-1].width
+		end
+	end
+end
+
+local function updateSpreadsheet()
+	local index = 0
+	for a,b in ipairs(spreadsheetArea.rRect) do
+		for c,d in ipairs(spreadsheetArea.cRect) do
+			index = index + 1
+			spreadsheetArea.rAndC[index].x = d.x
+			spreadsheetArea.rAndC[index].y = b.y
+		end
+	end
+end
+
 function spreadsheetArea.load()
 	spreadsheetArea.x=origin.x
 	spreadsheetArea.y=nameBoxAndFormulaBar.y+nameBoxAndFormulaBar.height
@@ -33,7 +68,16 @@ function spreadsheetArea.load()
 		       x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 			y=spreadsheetArea.y,
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
-			deltaY=spreadsheetArea.y
+			deltaY=spreadsheetArea.y,
+		extendSide = function(self)
+			if topBoxInteraction(self) then
+				if (math.abs(cursor.x - (self.deltaX+self.width))<self.width/2) then
+					if love.mouse.isDown(1) then
+						self.width=math.abs(cursor.x-self.deltaX)+10
+					end
+				end
+			end
+		end
 		})
 	end
 	for i = 1,spreadsheetArea.amountOfRows,1 do -- Numbers, Rows
@@ -65,32 +109,16 @@ function spreadsheetArea.load()
 						  -- scrollBarUpdate()
 end
 
-local function containCursor()	-- Contain cursor in viewport.
-	if cursor.x > spreadsheetArea.x+spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width and cursor.y > spreadsheetArea.y + spreadsheetArea.cBoxField.height and cursor.y < spreadsheetArea.y + spreadsheetArea.height then
-		return true
-	else
-		return false
-	end
-end
-
-local function topBoxInteraction(v) -- returns true if cursor interacts with a box.
-	if (cursor.y > spreadsheetArea.cBoxField.y and cursor.y < spreadsheetArea.cBoxField.y + spreadsheetArea.cBoxField.height and cursor.x > v.deltaX and cursor.x < v.deltaX + v.width) and (cursor.x > spreadsheetArea.cBoxField.x + spreadsheetArea.cBoxField.width and cursor.x < spreadsheetArea.x + spreadsheetArea.width) then
-		return true
-	else
-		return false
-	end
-end
-
 function spreadsheetArea.draw()
 	spreadsheetArea.highlight()
-for i,v in ipairs(spreadsheetArea.rAndC) do --For testing
-	love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
-end
+	for i,v in ipairs(spreadsheetArea.rAndC) do -- For testing.
+		love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
+	end
 
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		love.graphics.setColor(0,0,0)
 		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
-		if topBoxInteraction(v) then
+		if topBoxInteraction(v) then -- For testing.
 			love.graphics.setColor(0.4,0.4,0)
 			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
 			love.graphics.setColor(1,1,1)
@@ -115,6 +143,11 @@ end
 function spreadsheetArea.update()
 	spreadsheetArea.scrollBarUpdate()
 --	spreadsheetArea.mouseVisibility()
+	for i,v in ipairs(spreadsheetArea.cRect) do
+		v.extendSide(v)
+	end
+	topBoxUpdate()
+	updateSpreadsheet()
 end
 
 function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by horizontal scroll bar.
@@ -149,8 +182,6 @@ function spreadsheetArea.mouseVisibility()
 	end
 end
 
-
-
 function spreadsheetArea.highlight()
 	local tablePos = {x=0,y=0} -- Local table position.
 	for a,topObj in ipairs(spreadsheetArea.cRect) do -- Top most.
@@ -179,5 +210,3 @@ function spreadsheetArea.highlight()
 		end
 	end
 end
-
-
