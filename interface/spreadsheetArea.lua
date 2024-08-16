@@ -95,7 +95,7 @@ function spreadsheetArea.load()
 	for i = 1,spreadsheetArea.amountOfRows,1 do
 		for j = 65,90,1 do -- Alphabets
 			table.insert(spreadsheetArea.rAndC,{
-				value=i.."&"..j,
+				value="",--i.."&"..j,
 				width=65,
 				height=20,
 	              x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(j-65),
@@ -106,8 +106,6 @@ function spreadsheetArea.load()
 			})
 		end
 	end
-	spreadsheetArea.getTotalLengthColumnRow() -- Used for scrollBar navigation.
-						  -- scrollBarUpdate()
 end
 
 function spreadsheetArea.draw()
@@ -149,15 +147,12 @@ function spreadsheetArea.update()
 	end
 	topBoxUpdate()
 	updateSpreadsheet()
+	spreadsheetArea.getTotalLengthColumnRow()
 end
 
-function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by horizontal scroll bar.
-	for i,v in ipairs(spreadsheetArea.cRect) do
-		spreadsheetArea.totalLengthColumn=spreadsheetArea.totalLengthColumn+v.width
-	end
-	for i,v in ipairs(spreadsheetArea.rRect) do -- and vertical scroll bar.
-		spreadsheetArea.totalLengthRow=spreadsheetArea.totalLengthRow+v.height
-	end
+function spreadsheetArea.getTotalLengthColumnRow() -- Will be use by scroll bars.
+	spreadsheetArea.totalLengthColumn=spreadsheetArea.cRect[#spreadsheetArea.cRect].x+spreadsheetArea.cRect[#spreadsheetArea.cRect].width-spreadsheetArea.cRect[1].x
+	spreadsheetArea.totalLengthRow=spreadsheetArea.rRect[#spreadsheetArea.rRect].y+spreadsheetArea.rRect[#spreadsheetArea.rRect].height-spreadsheetArea.rRect[1].y
 end
 
 function spreadsheetArea.scrollBarUpdate()
