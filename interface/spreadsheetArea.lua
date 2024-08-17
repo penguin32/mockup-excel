@@ -32,6 +32,9 @@ local function updateSpreadsheet()
 			spreadsheetArea.rAndC[index].x = d.x
 			spreadsheetArea.rAndC[index].y = b.y
 			spreadsheetArea.rAndC[index].width = d.width
+			if index ~= spreadsheetArea.tablePos.persistentIndex then
+	spreadsheetArea.rAndC[index].selected = false
+			end -- For limiting selected boxes, for mousepressed() in this file.
 		end
 	end
 end
@@ -107,14 +110,16 @@ function spreadsheetArea.load()
 			})
 		end
 	end
-	spreadsheetArea.tablePos = {x=0,y=0,index=0} -- Used by highlight() and mousepressed().
+	spreadsheetArea.tablePos = {x=0,y=0,index=0,persistentIndex=0
+	} -- Used by highlight() and mousepressed().
 end
 
 function spreadsheetArea.draw()
 	spreadsheetArea.highlight()
 	for i,v in ipairs(spreadsheetArea.rAndC) do -- Print out value above drawn rectangles.
 		love.graphics.setColor(1,1,1)
-		love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
+		--love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
+		love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,-5,-v.height/8)
 	end
 
 	for i,v in ipairs(spreadsheetArea.cRect) do
@@ -218,11 +223,12 @@ function spreadsheetArea.mousepressed(button)
 -- Function added below here will run only once every after a new mousepressed.
 -- spreadsheetArea.tablePos.index, is a boxes' index where cursor hover at or last hover at.
 
-
 		if spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected==false then
 			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=true
+		     spreadsheetArea.tablePos.persistentIndex = spreadsheetArea.tablePos.index
 		else -- This is how I currently deselect a box.
 			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=false
+			spreadsheetArea.tablePos.persistentIndex = 0
 		end -- Plan: If I click on a different box, It should reset v.selected value.
 	end	    --  if v.selected == true, then if cursor.x < v.deltaX and so on...
 end
