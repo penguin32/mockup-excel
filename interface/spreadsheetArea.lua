@@ -95,31 +95,36 @@ function spreadsheetArea.load()
 	for i = 1,spreadsheetArea.amountOfRows,1 do
 		for j = 65,90,1 do -- Alphabets
 			table.insert(spreadsheetArea.rAndC,{
-				value="",--i.."&"..j,
+				value=i.."&"..j,
 				width=65,
 				height=20,
 	              x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(j-65),
 		      y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 	          deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
-		  ["color"]={["r"]=0,["g"]=0.1,["b"]=0}
+		  ["color"]={["r"]=0,["g"]=0,["b"]=0},
+		  selected = false
 			})
 		end
 	end
+	spreadsheetArea.tablePos = {x=0,y=0,index=0} -- Used by highlight() and mousepressed().
 end
 
 function spreadsheetArea.draw()
 	spreadsheetArea.highlight()
-	for i,v in ipairs(spreadsheetArea.rAndC) do -- For testing.
+	for i,v in ipairs(spreadsheetArea.rAndC) do -- Print out value above drawn rectangles.
+		love.graphics.setColor(1,1,1)
 		love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,string.len(v.value)-v.width/4,-v.height/8)
 	end
 
 	for i,v in ipairs(spreadsheetArea.cRect) do
 		love.graphics.setColor(0,0,0)
 		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
-		if topBoxInteraction(v) then -- For testing.
+		if topBoxInteraction(v) then -- For testing,	Resizing top boxes columns.
 			love.graphics.setColor(0.4,0.4,0)
-			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+		love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+			love.graphics.setColor(0.7,0.7,0)
+		love.graphics.rectangle("fill",v.deltaX+v.width/1.2,v.deltaY,v.width,v.height)
 			love.graphics.setColor(1,1,1)
 		end
 		love.graphics.setColor(1,1,1)
@@ -179,30 +184,40 @@ function spreadsheetArea.mouseVisibility()
 end
 
 function spreadsheetArea.highlight()
-	local tablePos = {x=0,y=0} -- Local table position.
 	for a,topObj in ipairs(spreadsheetArea.cRect) do -- Top most.
 		for b,leftObj in ipairs(spreadsheetArea.rRect) do -- Left most.
 			if containCursor() and (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
-				tablePos.x = topObj.deltaX
-				tablePos.y = leftObj.deltaY
+				spreadsheetArea.tablePos.x = topObj.deltaX
+				spreadsheetArea.tablePos.y = leftObj.deltaY
 			end
 		end
 	end
 	for i,v in ipairs(spreadsheetArea.rAndC) do
-		if v.deltaX == tablePos.x and v.deltaY == tablePos.y then
-			v["color"]["g"]=0.1
+			if v.selected == true then
+				v.color.b=1
+			else
+				v.color.b=0.3
+			end
+		if v.deltaX == spreadsheetArea.tablePos.x and v.deltaY == spreadsheetArea.tablePos.y and containCursor() then
+			v.color.g=0.5
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
-			love.graphics.setColor(1,1,1)
-			v["color"]["g"]=1
+			v.color.g=0
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
-			love.graphics.setColor(1,1,1)
+			spreadsheetArea.tablePos.index = i
 		else
-			v["color"]["g"]=0.1
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
-			love.graphics.setColor(1,1,1)
 		end
+	end
+	return isCursorHoverAboveIt
+end
+
+function spreadsheetArea.mousepressed(button)
+	if spreadsheetArea.tablePos.index > 0 and button == 1 and containCursor() then
+		if spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected==false then
+			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=true
+		end -- Plan: If I click on a different box, It should reset v.selected value.
 	end
 end

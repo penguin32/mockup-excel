@@ -1,11 +1,9 @@
 cursor={x=0,y=0}
 
-function love.keypressed(key,scancode)
-end
-
 function love.mousepressed(x,y,button)
 	verticalScrollBar.interact()
 	leafBarAndHorizontalScrollBar.interact()
+	spreadsheetArea.mousepressed(button)
 end
 
 function love.mousereleased()
