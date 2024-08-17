@@ -95,7 +95,7 @@ function spreadsheetArea.load()
 	for i = 1,spreadsheetArea.amountOfRows,1 do
 		for j = 65,90,1 do -- Alphabets
 			table.insert(spreadsheetArea.rAndC,{
-				value=i.."&"..j,
+				value="",--i.."&"..j,
 				width=65,
 				height=20,
 	              x=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(j-65),
@@ -211,13 +211,39 @@ function spreadsheetArea.highlight()
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		end
 	end
-	return isCursorHoverAboveIt
 end
 
 function spreadsheetArea.mousepressed(button)
 	if spreadsheetArea.tablePos.index > 0 and button == 1 and containCursor() then
+-- Function added below here will run only once every after a new mousepressed.
+-- spreadsheetArea.tablePos.index, is a boxes' index where cursor hover at or last hover at.
+
+
 		if spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected==false then
 			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=true
+		else -- This is how I currently deselect a box.
+			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=false
 		end -- Plan: If I click on a different box, It should reset v.selected value.
+	end	    --  if v.selected == true, then if cursor.x < v.deltaX and so on...
+end
+
+function spreadsheetArea.keypressed(key)
+	if key == "backspace" then -- Remove last characters on v.value that has selected==true
+		for i,v in ipairs(spreadsheetArea.rAndC) do
+			if v.selected == true then
+				local byteoffset = utf8.offset(v.value,-1)
+				if byteoffset then
+					v.value = string.sub(v.value,1,byteoffset-1)
+				end
+			end
+		end
+	end
+end
+
+function spreadsheetArea.textInput(t)
+	for i,v in ipairs(spreadsheetArea.rAndC) do -- Append text input on v.value,
+		if v.selected == true then	    -- that has selected == true.
+			v.value = v.value .. t
+		end
 	end
 end

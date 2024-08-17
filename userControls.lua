@@ -18,3 +18,11 @@ end
 function cursor.draw()
 	love.graphics.circle("line",cursor.x,cursor.y,20)
 end
+
+function love.keypressed(key)
+	spreadsheetArea.keypressed(key)
+end
+
+function love.textinput(t)
+	spreadsheetArea.textInput(t)
+end

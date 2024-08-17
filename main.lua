@@ -80,6 +80,8 @@ function love.load()
 	}
 -- Require'd lua files, uses some of the global above, so when requiring files, it needs to
 -- be below the global variables its uses.
+	utf8 = require("utf8")
+	love.keyboard.setKeyRepeat(true)
 	require "interface.titleBar"
 	require "interface.menuBar"
 	require "interface.toolBar"
