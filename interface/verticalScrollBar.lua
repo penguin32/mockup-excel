@@ -78,8 +78,10 @@ function verticalScrollBar.update()
 	spreadsheetArea.width = dynamicAppWindow.width - verticalScrollBar.width
 end
 
-function verticalScrollBar.interact()
-	if cursor.x > verticalScrollBar.scrollBar.x and cursor.x < verticalScrollBar.scrollBar.x + verticalScrollBar.scrollBar.width and cursor.y > verticalScrollBar.scrollBar.y and cursor.y < verticalScrollBar.scrollBar.y + verticalScrollBar.scrollBar.maxHeight then
-		verticalScrollBar.scrollBar.isPressed = true
+function verticalScrollBar.interact(button)
+	if button == 1 then
+		if cursor.x > verticalScrollBar.scrollBar.x and cursor.x < verticalScrollBar.scrollBar.x + verticalScrollBar.scrollBar.width and cursor.y > verticalScrollBar.scrollBar.y and cursor.y < verticalScrollBar.scrollBar.y + verticalScrollBar.scrollBar.maxHeight then
+			verticalScrollBar.scrollBar.isPressed = true
+		end
 	end
 end

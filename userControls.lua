@@ -1,8 +1,8 @@
 cursor={x=0,y=0}
 
 function love.mousepressed(x,y,button)
-	verticalScrollBar.interact()
-	leafBarAndHorizontalScrollBar.interact()
+	verticalScrollBar.interact(button)
+	leafBarAndHorizontalScrollBar.interact(button)
 	spreadsheetArea.mousepressed(button)
 end
 

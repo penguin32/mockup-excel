@@ -80,8 +80,10 @@ function leafBarAndHorizontalScrollBar.update()
 	end
 end
 
-function leafBarAndHorizontalScrollBar.interact() -- Used in userControls.lua
-	if cursor.y > leafBarAndHorizontalScrollBar.scrollBar.y and cursor.y < leafBarAndHorizontalScrollBar.scrollBar.y + leafBarAndHorizontalScrollBar.scrollBar.height and cursor.x > leafBarAndHorizontalScrollBar.scrollBar.x and cursor.x < leafBarAndHorizontalScrollBar.scrollBar.x + leafBarAndHorizontalScrollBar.scrollBar.maxWidth then
-		leafBarAndHorizontalScrollBar.scrollBar.isPressed = true
+function leafBarAndHorizontalScrollBar.interact(button) -- Used in userControls.lua
+	if button == 1 then
+		if cursor.y > leafBarAndHorizontalScrollBar.scrollBar.y and cursor.y < leafBarAndHorizontalScrollBar.scrollBar.y + leafBarAndHorizontalScrollBar.scrollBar.height and cursor.x > leafBarAndHorizontalScrollBar.scrollBar.x and cursor.x < leafBarAndHorizontalScrollBar.scrollBar.x + leafBarAndHorizontalScrollBar.scrollBar.maxWidth then
+			leafBarAndHorizontalScrollBar.scrollBar.isPressed = true
+		end
 	end
 end
