@@ -51,7 +51,7 @@ local function updateSpreadsheet()
 			spreadsheetArea.rAndC[index].width = d.width
 			spreadsheetArea.rAndC[index].height = b.height
 			if index ~= spreadsheetArea.tablePos.persistentIndex then
-	spreadsheetArea.rAndC[index].selected = false
+	spreadsheetArea.rAndC[index].selected = false -- Comment line for multiple select box.
 			end -- For limiting selected boxes, for mousepressed() in this file.
 		end
 	end
@@ -91,7 +91,7 @@ function spreadsheetArea.load()
 			y=spreadsheetArea.y,
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 			deltaY=spreadsheetArea.y,
-			["color"]={["r"]=0,["g"]=0,["b"]=0},
+			["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5},
 		extendSide = function(self)
 			if topBoxInteraction(self) then
 				if (math.abs(cursor.x - (self.deltaX+self.width))<self.width/2) then
@@ -112,7 +112,7 @@ function spreadsheetArea.load()
 		       y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 			deltaX=spreadsheetArea.cBoxField.x,
 		  deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
-		  ["color"]={["r"]=0,["g"]=0,["b"]=0},
+		["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5},
 		extendSide = function(self)
 			if leftBoxInteraction(self) then
 				if (math.abs(cursor.y - (self.deltaY+self.height))<self.height/2) then
@@ -134,8 +134,9 @@ function spreadsheetArea.load()
 		      y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 	          deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
-		  ["color"]={["r"]=0,["g"]=0,["b"]=0},
-		  selected = false
+		  ["color"]={["r"]=0,["g"]=0.5,["b"]=0.5},
+		  selected = false,
+		  selectedRect = false -- I'll use this for rectangular selection CONTINUE
 			})
 		end
 	end
@@ -176,7 +177,8 @@ function spreadsheetArea.draw()
 			love.graphics.setColor(1,1,1)
 		end
 
-		love.graphics.setColor(1,1,1)
+--		love.graphics.setColor(1,1,1)
+		love.graphics.setColor(v.color.r,v.color.g,v.color.b)
 		love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		love.graphics.print(v.value,v.deltaX+v.width/9.5,v.deltaY+v.height/6,0,1,1)
 	end
@@ -232,23 +234,30 @@ end
 function spreadsheetArea.highlight()
 	for a,topObj in ipairs(spreadsheetArea.cRect) do -- Top most.
 		for b,leftObj in ipairs(spreadsheetArea.rRect) do -- Left most.
-			if containCursor() and (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
+		if containCursor() then
+			if (cursor.x > topObj.deltaX and cursor.x < topObj.deltaX + topObj.width and cursor.y > leftObj.deltaY and cursor.y < leftObj.deltaY + leftObj.height) then
 				spreadsheetArea.tablePos.x = topObj.deltaX
 				spreadsheetArea.tablePos.y = leftObj.deltaY
+				topObj.color={r=0,g=1,b=0}
+				leftObj.color={r=0,g=1,b=0}
 			end
+		else
+				topObj.color={r=0.5,g=0.5,b=0.5}
+				leftObj.color={r=0.5,g=0.5,b=0.5}
+		end
 		end
 	end
 	for i,v in ipairs(spreadsheetArea.rAndC) do
 			if v.selected == true then
-				v.color.b=1
+				v.color.g=0.6
 			else
-				v.color.b=0.3
+				v.color.g=0.3
 			end
 		if v.deltaX == spreadsheetArea.tablePos.x and v.deltaY == spreadsheetArea.tablePos.y and containCursor() then
-			v.color.g=0.7
+			v.color.b=0.5
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
-			v.color.g=0
+			v.color.b=0
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 			spreadsheetArea.tablePos.index = i
@@ -257,33 +266,40 @@ function spreadsheetArea.highlight()
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		end
 		if v.deltaX == spreadsheetArea.tablePos.x and v.deltaY < spreadsheetArea.tablePos.y and containCursor() then
-			v.color.g=0.5
+			v.color.b=0.5
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		elseif v.deltaX == spreadsheetArea.tablePos.x and v.deltaY >= spreadsheetArea.tablePos.y and containCursor() then
-			v.color.g=0
+			v.color.b=0
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		else
-			v.color.g=0
+			v.color.b=0
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		end
 		if v.deltaY == spreadsheetArea.tablePos.y and v.deltaX < spreadsheetArea.tablePos.x and containCursor() then
-			v.color.g=0.7
+			v.color.b=0.7
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		elseif v.deltaY == spreadsheetArea.tablePos.y and v.deltaX >= spreadsheetArea.tablePos.x and containCursor() then
-			v.color.g=0
+			v.color.b=0
 			love.graphics.setColor(v["color"]["r"],v["color"]["g"],v["color"]["b"])
 			love.graphics.rectangle("line",v.deltaX,v.deltaY,v.width,v.height)
 		end
-		for i,v in ipairs(spreadsheetArea.cRect) do
-			if v.deltaY == spreadsheetArea.tablePos.y then
-				v.color={r=0,g=1,b=0} -- Continue here, fix color
-			else				-- of top column bar.
-				v.color={r=1,g=1,b=1}
-			end
+	end
+	for i,v in ipairs(spreadsheetArea.cRect) do
+		if spreadsheetArea.tablePos.index > 0 then
+	       if spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].deltaX ~= v.deltaX and containCursor() then
+			v.color={r=0.5,g=0.5,b=0.5}
+		end
+		end
+	end
+	for i,v in ipairs(spreadsheetArea.rRect) do
+		if spreadsheetArea.tablePos.index > 0 then
+		if spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].deltaY ~= v.deltaY and containCursor() then
+			v.color={r=0.5,g=0.5,b=0.5}
+		end
 		end
 	end
 end
