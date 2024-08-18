@@ -314,6 +314,16 @@ function spreadsheetArea.keypressed(key)
 			end
 		end
 	end
+	if key == "return" then -- Remove last characters on v.value that has selected==true
+		for i,v in ipairs(spreadsheetArea.rAndC) do
+			if v.selected == true then
+				local byteoffset = utf8.offset(v.value,-1)
+				if byteoffset then
+					v.value = v.value .. "\n"
+				end
+			end
+		end
+	end
 end
 
 function spreadsheetArea.textInput(t)
