@@ -40,6 +40,116 @@ local function leftBoxUpdate()
 	end
 end
 
+local function separateLetterFromNumbers(phrase)
+	local charTable = {}
+	for i=1,#phrase,1 do
+		table.insert(charTable,string.sub(phrase,i,i))
+	end
+	-- Checking if the first character is a letter. 65 to 90
+	-- Then check chars if its a number 0 to 9,     48 to 57
+	local alphabetColumn = ""
+	local aNumberRow = ""
+	for i,v in ipairs(charTable) do
+		if string.byte(v) >= 65 and string.byte(v) <= 90 then
+			alphabetColumn = alphabetColumn .. v
+		elseif string.byte(v) >= 48 and string.byte(v) <= 57 then
+			aNumberRow = aNumberRow .. v
+		end
+	end
+	return tonumber(aNumberRow), alphabetColumn
+end
+
+local function runMethods(commands)-- =SUM(D6:D11) letters first then numbers, column then row.
+	local firstParenthesis = string.find(commands,"%(")-- This are index where theyre found
+	local separator = string.find(commands,":")
+	local secondParenthesis = string.find(commands,"%)")
+
+-- Getting first phrase.
+	local	phrase1Row = nil
+	local	phrase1Column = nil
+	if firstParenthesis ~= nil then
+		local phrase1 = string.sub(commands,firstParenthesis+1,separator-1)
+		phrase1Row, phrase1Column = separateLetterFromNumbers(phrase1)
+	end
+-- Getting second phrase after that colon.
+	local	phrase2Row = nil
+	local	phrase2Column = nil
+	if secondParenthesis ~= nil then
+		local phrase2 = string.sub(commands,separator+1,secondParenthesis-1)
+		phrase2Row, phrase2Column = separateLetterFromNumbers(phrase2)
+	end
+
+local iDidRun = false
+local outputOfFunctions = 0
+
+	if separator ~= nil and phrase1Row ~= nil and phrase1Column ~= nil and phrase2Row ~= nil and phrase2Column ~= nil then
+
+		if string.sub(commands,1,4) == "=SUM" then
+
+			iDidRun = true
+			local byRowFirst = false
+			local holdMyBeer = phrase1Row
+		repeat -- Doing things in order, I know it's unnecessary.
+			-- Just incase I needed this in future.
+	for i,v in ipairs(spreadsheetArea.rAndC) do
+		if v.selectedRect == true then
+       if (phrase1Row == v.row and phrase1Column == v.column) and tonumber(v.value) ~= nil then
+		outputOfFunctions = outputOfFunctions + tonumber(v.value)
+		v.selectedRect = false
+	elseif (phrase1Row == v.row and phrase1Column == v.column) and tonumber(v.value) == nil then
+		v.selectedRect = false
+	end
+		end
+	end -- In a tic tac toe, with "and" operator, with a selected
+	--	Square tiles 3x3, it will only add diagonally,
+	--	but with "or" operator, it will add everything by layer order
+	--	starting from top left of the tic tac toe.
+	--	Conclusion: or-operator works best for square tiles 3x3
+	--			if I want that in order? I don't think I'd need that.
+	--		and-operator works only for 1 dimension/n dimensions.
+	--		I have more work for that,
+	--	But if i want to do it in-order, it depends wether i want to do
+	--	task by column then row, or by row and then column, it will depends.
+	--	on what I may need in the future coding this.
+	--	For now it should be "or" operator.
+	--
+	--	Nevermind, I'm using "and" operator, to make it possible to
+	--	specify which boxes from the selected box I should add.
+		if phrase1Row <= phrase2Row then
+			phrase1Row = phrase1Row + 1
+		else
+			byRowFirst = true
+		end
+	if byRowFirst == true then
+		if string.byte(phrase1Column) <= string.byte(phrase2Column) then
+			phrase1Column = string.char(string.byte(phrase1Column)+1)
+		end
+		if phrase1Row > phrase2Row then
+			phrase1Row = holdMyBeer
+			byRowFirst = false
+		end
+	end
+		until(phrase1Row > phrase2Row and string.byte(phrase1Column) > string.byte(phrase2Column))
+
+--	for i,v in ipairs(spreadsheetArea.rAndC) do
+--		if v.selectedRect == true then
+--			outputOfFunctions = outputOfFunctions + v.value
+--			v.selectedRect = false -- To stop re using same object.
+--		end
+--	end
+		end -- end of if commands == "=SUM"
+	end -- end of checking variables == nil
+	return iDidRun, outputOfFunctions
+-- How am I going to be sure that it wouldn't skip over some objects because index?
+-- 	ans: Inside for-loops it does skip objects so addition with
+-- 		"columns by rows" in order is troublesome since it has to be kept
+-- 		running under update() function until all object.selectedRect all turned to
+-- 		false,
+--		then only it will set a certain boolean to turn it of,
+--		when it is turned on first by a "return" key.
+--		For now phrase1 and phrase2 column row, is not needed for sum function
+--			when adding numbers in orders.
+end
 
 local function updateSpreadsheet()
 	local index = 0
@@ -148,7 +258,9 @@ function spreadsheetArea.load()
 	          deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 		  ["color"]={["r"]=0,["g"]=0.5,["b"]=0.5},
 		  selected = false,
-		  selectedRect = false -- I'll use this for rectangular selection CONTINUE
+		  selectedRect = false, -- I'll use this for rectangular selection CONTINUE
+		  row=i,
+		  column=string.char(j) -- For Adding function() command.
 			})
 		end
 	end
@@ -372,7 +484,10 @@ function spreadsheetArea.keypressed(key)
 		for i,v in ipairs(spreadsheetArea.rAndC) do
 			if v.selected == true then
 				local byteoffset = utf8.offset(v.value,-1)
-				if byteoffset then
+				local bool, output = runMethods(v.value)
+				if bool == true then
+					v.value = output
+				elseif byteoffset then
 					v.value = v.value .. "\n"
 				end
 			end
