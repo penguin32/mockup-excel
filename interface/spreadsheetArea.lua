@@ -55,6 +55,18 @@ local function updateSpreadsheet()
 			end -- For limiting selected boxes, for mousepressed() in this file.
 		end
 	end
+
+	if spreadsheetArea.selectedRectMode == true then
+		if spreadsheetArea.tablePos.persistentIndex > 0 then
+		for i,v in ipairs(spreadsheetArea.rAndC) do
+			if v.deltaX >= spreadsheetArea.rAndC[spreadsheetArea.tablePos.persistentIndex].deltaX and v.deltaY >= spreadsheetArea.rAndC[spreadsheetArea.tablePos.persistentIndex].deltaY and v.deltaX + v.width <= cursor.x and v.deltaY + v.height <= cursor.y then-- and spreadsheetArea.selectedRectMode == true then
+				v.selectedRect = true
+			else
+				v.selectedRect = false
+			end
+		end
+		end
+	end
 end
 
 function spreadsheetArea.load()
@@ -142,6 +154,7 @@ function spreadsheetArea.load()
 	end
 	spreadsheetArea.tablePos = {x=0,y=0,index=0,persistentIndex=0
 	} -- Used by highlight() and mousepressed().
+	spreadsheetArea.selectedRectMode = false 	-- Set true, to select multiple boxes.
 end
 
 function spreadsheetArea.draw()
@@ -149,6 +162,10 @@ function spreadsheetArea.draw()
 	for i,v in ipairs(spreadsheetArea.rAndC) do -- Print out value above drawn rectangles.
 		love.graphics.setColor(1,1,1)
 		love.graphics.print(v.value,v.deltaX,v.deltaY,0,1,1,-5,-v.height/8)
+		if v.selectedRect == true then
+			love.graphics.setColor(0.8,0.8,0,0.5) -- For testing.
+			love.graphics.rectangle("fill",v.deltaX,v.deltaY,v.width,v.height)
+		end
 	end
 
 	for i,v in ipairs(spreadsheetArea.cRect) do
@@ -305,7 +322,9 @@ function spreadsheetArea.highlight()
 end
 
 function spreadsheetArea.mousepressed(button)
-	if spreadsheetArea.tablePos.index > 0 and button == 1 and containCursor() then
+if containCursor() then
+	if button == 1 then
+		if spreadsheetArea.tablePos.index > 0 then
 -- Function added below here will run only once every after a new mousepressed.
 -- spreadsheetArea.tablePos.index, is a boxes' index where cursor hover at or last hover at.
 
@@ -316,7 +335,26 @@ function spreadsheetArea.mousepressed(button)
 			spreadsheetArea.rAndC[spreadsheetArea.tablePos.index].selected=false
 			spreadsheetArea.tablePos.persistentIndex = 0
 		end -- Plan: If I click on a different box, It should reset v.selected value.
-	end	    --  if v.selected == true, then if cursor.x < v.deltaX and so on...
+		end --  if v.selected == true, then if cursor.x < v.deltaX and so on...
+	end
+
+	-- Mouse button 2, right-click to test out function, selectedRectMode<- this is a bool.
+	if button == 2 then
+		if spreadsheetArea.selectedRectMode == false then
+			spreadsheetArea.selectedRectMode = true
+		     spreadsheetArea.tablePos.persistentIndex = spreadsheetArea.tablePos.index
+		end
+	end
+end
+end
+
+function spreadsheetArea.mousereleased(button)
+	if button == 2 then
+		if spreadsheetArea.selectedRectMode == true then
+			spreadsheetArea.selectedRectMode = false
+		     spreadsheetArea.tablePos.persistentIndex = 0
+		end
+	end
 end
 
 function spreadsheetArea.keypressed(key)

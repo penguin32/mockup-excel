@@ -6,9 +6,10 @@ function love.mousepressed(x,y,button)
 	spreadsheetArea.mousepressed(button)
 end
 
-function love.mousereleased()
+function love.mousereleased(x,y,button)
 	leafBarAndHorizontalScrollBar.scrollBar.isPressed = false
 	verticalScrollBar.scrollBar.isPressed = false
+	spreadsheetArea.mousereleased(button)
 end
 
 function cursor.update()
