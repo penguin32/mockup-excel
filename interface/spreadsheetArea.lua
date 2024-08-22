@@ -213,16 +213,7 @@ function spreadsheetArea.load()
 			y=spreadsheetArea.y,
 		  deltaX=spreadsheetArea.cBoxField.x+spreadsheetArea.cBoxField.width+65*(i-65),
 			deltaY=spreadsheetArea.y,
-			["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5},
-		extendSide = function(self)
-			if topBoxInteraction(self) then
-				if (math.abs(cursor.x - (self.deltaX+self.width))<self.width/2) then
-					if love.mouse.isDown(1) then
-						self.width=math.abs(cursor.x-self.deltaX)+10
-					end
-				end
-			end
-		end
+			["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5}
 		})
 	end
 	for i = 1,spreadsheetArea.amountOfRows,1 do -- Numbers, Rows
@@ -234,18 +225,18 @@ function spreadsheetArea.load()
 		       y=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
 			deltaX=spreadsheetArea.cBoxField.x,
 		  deltaY=spreadsheetArea.cBoxField.y+spreadsheetArea.cBoxField.height+20*(i-1),
-		["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5},
-		extendSide = function(self)
-			if leftBoxInteraction(self) then
-				if (math.abs(cursor.y - (self.deltaY+self.height))<self.height/2) then
-					if love.mouse.isDown(1) then
-						self.height=math.abs(cursor.y-self.deltaY)+10
-					end
-				end
-			end
-		end
+		["color"]={["r"]=0.5,["g"]=0.5,["b"]=0.5}
 		})
 	end
+
+-- August 22, 2024 : Temporary solution for saving file because I want to use this app :)
+	if love.filesystem.getInfo("savedata.txt")then
+		file = love.filesystem.read("savedata.txt")
+		data = lume.deserialize(file)
+		spreadsheetArea.rAndC = data.rAndC
+		spreadsheetArea.cRect = data.cRect
+		spreadsheetArea.rRect = data.rRect
+	else
 	for i = 1,spreadsheetArea.amountOfRows,1 do
 		for j = 65,90,1 do -- Alphabets
 			table.insert(spreadsheetArea.rAndC,{
@@ -264,6 +255,7 @@ function spreadsheetArea.load()
 			})
 		end
 	end
+	end -- August 22, 2024, Temporary solution for saving data & loading it.
 	spreadsheetArea.tablePos = {x=0,y=0,index=0,persistentIndex=0
 	} -- Used by highlight() and mousepressed().
 	spreadsheetArea.selectedRectMode = false 	-- Set true, to select multiple boxes.
@@ -321,10 +313,10 @@ function spreadsheetArea.update()
 	spreadsheetArea.scrollBarUpdate()
 --	spreadsheetArea.mouseVisibility()
 	for i,v in ipairs(spreadsheetArea.cRect) do
-		v.extendSide(v)
+		spreadsheetArea.cRectExtendSide(v)
 	end
 	for i,v in ipairs(spreadsheetArea.rRect) do
-		v.extendSide(v)
+		spreadsheetArea.rRectExtendSide(v)
 	end
 	topBoxUpdate()
 	leftBoxUpdate()
@@ -499,6 +491,26 @@ function spreadsheetArea.textInput(t)
 	for i,v in ipairs(spreadsheetArea.rAndC) do -- Append text input on v.value,
 		if v.selected == true then	    -- that has selected == true.
 			v.value = v.value .. t
+		end
+	end
+end
+
+function spreadsheetArea.rRectExtendSide(object)
+	if leftBoxInteraction(object) then
+		if (math.abs(cursor.y - (object.deltaY+object.height))<object.height/2) then
+			if love.mouse.isDown(1) then
+				object.height=math.abs(cursor.y-object.deltaY)+10
+			end
+		end
+	end
+end
+
+function spreadsheetArea.cRectExtendSide(object)
+	if topBoxInteraction(object) then
+		if (math.abs(cursor.x - (object.deltaX+object.width))<object.width/2) then
+			if love.mouse.isDown(1) then
+				object.width=math.abs(cursor.x-object.deltaX)+10
+			end
 		end
 	end
 end
